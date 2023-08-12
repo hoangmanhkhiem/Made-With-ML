@@ -73,7 +73,7 @@ def pad_array(arr: np.ndarray, dtype=np.int32) -> np.ndarray:
     return padded_arr
 
 
-def collate_fn(batch: Dict[str, np.ndarray]) -> Dict[str, torch.Tensor]:  # pragma: no cover, air internal
+def collate_fn(batch: Dict[str, np.ndarray]) -> Dict[str, torch.Tensor]:    # pragma: no cover, air internal
     """Convert a batch of numpy arrays to tensors (with appropriate padding).
 
     Args:
@@ -85,10 +85,10 @@ def collate_fn(batch: Dict[str, np.ndarray]) -> Dict[str, torch.Tensor]:  # prag
     batch["ids"] = pad_array(batch["ids"])
     batch["masks"] = pad_array(batch["masks"])
     dtypes = {"ids": torch.int32, "masks": torch.int32, "targets": torch.int64}
-    tensor_batch = {}
-    for key, array in batch.items():
-        tensor_batch[key] = torch.as_tensor(array, dtype=dtypes[key], device=get_device())
-    return tensor_batch
+    return {
+        key: torch.as_tensor(array, dtype=dtypes[key], device=get_device())
+        for key, array in batch.items()
+    }
 
 
 def get_run_id(experiment_name: str, trial_id: str) -> str:  # pragma: no cover, mlflow functionality

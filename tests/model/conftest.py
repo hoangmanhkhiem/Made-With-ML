@@ -16,5 +16,4 @@ def run_id(request):
 @pytest.fixture(scope="module")
 def predictor(run_id):
     best_checkpoint = predict.get_best_checkpoint(run_id=run_id)
-    predictor = TorchPredictor.from_checkpoint(best_checkpoint)
-    return predictor
+    return TorchPredictor.from_checkpoint(best_checkpoint)

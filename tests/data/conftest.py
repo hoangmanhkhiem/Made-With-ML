@@ -13,5 +13,4 @@ def pytest_addoption(parser):
 @pytest.fixture(scope="module")
 def df(request):
     dataset_loc = request.config.getoption("--dataset-loc")
-    df = ge.dataset.PandasDataset(pd.read_csv(dataset_loc))
-    return df
+    return ge.dataset.PandasDataset(pd.read_csv(dataset_loc))

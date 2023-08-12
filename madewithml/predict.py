@@ -42,10 +42,7 @@ def format_prob(prob: Iterable, index_to_class: Dict) -> Dict:
     Returns:
         Dict: Dictionary mapping class label to probability.
     """
-    d = {}
-    for i, item in enumerate(prob):
-        d[index_to_class[i]] = item
-    return d
+    return {index_to_class[i]: item for i, item in enumerate(prob)}
 
 
 def predict_with_proba(

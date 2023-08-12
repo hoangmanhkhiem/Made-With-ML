@@ -20,7 +20,7 @@ from madewithml.config import logger
 app = typer.Typer()
 
 
-def get_overall_metrics(y_true: np.ndarray, y_pred: np.ndarray) -> Dict:  # pragma: no cover, eval workload
+def get_overall_metrics(y_true: np.ndarray, y_pred: np.ndarray) -> Dict:    # pragma: no cover, eval workload
     """Get overall performance metrics.
 
     Args:
@@ -31,16 +31,15 @@ def get_overall_metrics(y_true: np.ndarray, y_pred: np.ndarray) -> Dict:  # prag
         Dict: overall metrics.
     """
     metrics = precision_recall_fscore_support(y_true, y_pred, average="weighted")
-    overall_metrics = {
+    return {
         "precision": metrics[0],
         "recall": metrics[1],
         "f1": metrics[2],
         "num_samples": np.float64(len(y_true)),
     }
-    return overall_metrics
 
 
-def get_per_class_metrics(y_true: np.ndarray, y_pred: np.ndarray, class_to_index: Dict) -> Dict:  # pragma: no cover, eval workload
+def get_per_class_metrics(y_true: np.ndarray, y_pred: np.ndarray, class_to_index: Dict) -> Dict:    # pragma: no cover, eval workload
     """Get per class performance metrics.
 
     Args:
@@ -51,17 +50,23 @@ def get_per_class_metrics(y_true: np.ndarray, y_pred: np.ndarray, class_to_index
     Returns:
         Dict: per class metrics.
     """
-    per_class_metrics = {}
     metrics = precision_recall_fscore_support(y_true, y_pred, average=None)
-    for i, _class in enumerate(class_to_index):
-        per_class_metrics[_class] = {
+    per_class_metrics = {
+        _class: {
             "precision": metrics[0][i],
             "recall": metrics[1][i],
             "f1": metrics[2][i],
             "num_samples": np.float64(metrics[3][i]),
         }
-    sorted_per_class_metrics = OrderedDict(sorted(per_class_metrics.items(), key=lambda tag: tag[1]["f1"], reverse=True))
-    return sorted_per_class_metrics
+        for i, _class in enumerate(class_to_index)
+    }
+    return OrderedDict(
+        sorted(
+            per_class_metrics.items(),
+            key=lambda tag: tag[1]["f1"],
+            reverse=True,
+        )
+    )
 
 
 @slicing_function()
@@ -79,7 +84,7 @@ def short_text(x):  # pragma: no cover, eval workload
     return len(x.text.split()) < 8  # less than 8 words
 
 
-def get_slice_metrics(y_true: np.ndarray, y_pred: np.ndarray, ds: Dataset) -> Dict:  # pragma: no cover, eval workload
+def get_slice_metrics(y_true: np.ndarray, y_pred: np.ndarray, ds: Dataset) -> Dict:    # pragma: no cover, eval workload
     """Get performance metrics for slices.
 
     Args:
@@ -97,11 +102,12 @@ def get_slice_metrics(y_true: np.ndarray, y_pred: np.ndarray, ds: Dataset) -> Di
         mask = slices[slice_name].astype(bool)
         if sum(mask):
             metrics = precision_recall_fscore_support(y_true[mask], y_pred[mask], average="micro")
-            slice_metrics[slice_name] = {}
-            slice_metrics[slice_name]["precision"] = metrics[0]
-            slice_metrics[slice_name]["recall"] = metrics[1]
-            slice_metrics[slice_name]["f1"] = metrics[2]
-            slice_metrics[slice_name]["num_samples"] = len(y_true[mask])
+            slice_metrics[slice_name] = {
+                "precision": metrics[0],
+                "recall": metrics[1],
+                "f1": metrics[2],
+                "num_samples": len(y_true[mask]),
+            }
     return slice_metrics
 
 

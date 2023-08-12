@@ -131,8 +131,7 @@ def preprocess(df: pd.DataFrame, class_to_index: Dict) -> Dict:
     df = df.drop(columns=["id", "created_on", "title", "description"], errors="ignore")  # clean dataframe
     df = df[["text", "tag"]]  # rearrange columns
     df["tag"] = df["tag"].map(class_to_index)  # label encoding
-    outputs = tokenize(df)
-    return outputs
+    return tokenize(df)
 
 
 class CustomPreprocessor(Preprocessor):
