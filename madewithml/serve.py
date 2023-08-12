@@ -35,12 +35,11 @@ class ModelDeployment:
     @app.get("/")
     def _index(self) -> Dict:
         """Health check."""
-        response = {
+        return {
             "message": HTTPStatus.OK.phrase,
             "status-code": HTTPStatus.OK,
             "data": {},
         }
-        return response
 
     @app.get("/run_id/")
     def _run_id(self) -> Dict:

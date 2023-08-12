@@ -62,11 +62,11 @@ def tune_models(
     """
     # Set up
     utils.set_seeds()
-    train_loop_config = {}
-    train_loop_config["num_samples"] = num_samples
-    train_loop_config["num_epochs"] = num_epochs
-    train_loop_config["batch_size"] = batch_size
-
+    train_loop_config = {
+        "num_samples": num_samples,
+        "num_epochs": num_epochs,
+        "batch_size": batch_size,
+    }
     # Scaling config
     scaling_config = ScalingConfig(
         num_workers=num_workers,

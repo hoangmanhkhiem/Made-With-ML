@@ -8,14 +8,12 @@ from madewithml import data
 @pytest.fixture(scope="module")
 def df():
     data = [{"title": "a0", "description": "b0", "tag": "c0"}]
-    df = pd.DataFrame(data)
-    return df
+    return pd.DataFrame(data)
 
 
 @pytest.fixture(scope="module")
 def class_to_index():
-    class_to_index = {"c0": 0, "c1": 1}
-    return class_to_index
+    return {"c0": 0, "c1": 1}
 
 
 def test_load_data(dataset_loc):
